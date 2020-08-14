@@ -1,6 +1,6 @@
 import { Component, VERSION } from "@angular/core";
 
-import { CalendarOptions } from "@fullcalendar/angular";
+import { CalendarOptions, DateSelectArg, EventClickArg, EventApi } from '@fullcalendar/angular';
 import { EventInput } from "@fullcalendar/angular";
 
 @Component({
@@ -29,7 +29,8 @@ export class AppComponent {
     editable: true,
     selectable: true,
     selectMirror: true,
-    dayMaxEvents: true
+    dayMaxEvents: true,
+    select: this.handleDateSelect.bind(this)
   };
 
   select(item: any) {
@@ -37,6 +38,26 @@ export class AppComponent {
     console.log(item.id);
     this.days = this._getDays(item.id);
     this.calendarOptions.events = this.days;
+  }
+
+  handleDateSelect(selectInfo: DateSelectArg) {
+    const title = prompt("Please enter a new title for your event");
+
+    console.log("hi");
+
+    const calendarApi = selectInfo.view.calendar;
+
+    calendarApi.unselect();
+
+    if (title) {
+      calendarApi.addEvent({
+        id: 3,
+        title,
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        allDay: selectInfo.allDay
+      });
+    }
   }
 
   private _getDays(id: number) {
